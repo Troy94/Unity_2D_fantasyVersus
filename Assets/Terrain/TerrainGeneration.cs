@@ -3,13 +3,18 @@ using UnityEngine;
 
 public class TerrainGeneration : MonoBehaviour
 {
-    public Sprite tile;
+    public Sprite TileGrass;
+    public Sprite TileGround;
+    public Sprite TileStone;
+
+
     public float surfaceValue = 0.25f;
     public int worldSize = 100;
     public float caveFreq = 0.05f;
     public float terrainFreq = 0.05f;
     public float heightMultiplier = 40f;
     public int heightAddition = 25;
+    public int groundLayerHight = 5;
     public float seed;
     public Texture2D noiseTexture;
     
@@ -30,19 +35,29 @@ public class TerrainGeneration : MonoBehaviour
             float height = Mathf.PerlinNoise ((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition;
             for (int y = 0; y < height; y++)
             {
-                if (noiseTexture.GetPixel(x,y).r > surfaceValue)
-                {                  
-                    {
-                        //put a tile
-                        GameObject newTile = new GameObject(name = "tile");
-                        newTile.transform.parent = this.transform;
-                        newTile.AddComponent<SpriteRenderer>();
-                        newTile.GetComponent<SpriteRenderer>().sprite = tile;
-                        newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                        if (noiseTexture.GetPixel(x, y).r < 0.5f);
-                    }
+                Sprite tileSprite; 
+                if (y < height - groundLayerHight)
+                {
+                    tileSprite = TileStone;
+
                 }
-              
+                else
+                {
+                    tileSprite = TileGround;//STONE BE HERE
+                    //tileSprite = TileGrass;
+                }
+
+                if (noiseTexture.GetPixel(x, y).r > surfaceValue)
+                {
+                    GameObject newTile = new GameObject();
+                    newTile.transform.parent = this.transform;
+                    newTile.AddComponent<SpriteRenderer>();
+                    newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+                    newTile.name = tileSprite.name;
+                    newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                    if (noiseTexture.GetPixel(x, y).r < 0.5f) ;
+
+                }
             }
         }
     }
