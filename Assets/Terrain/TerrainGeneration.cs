@@ -1,13 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TerrainGeneration : MonoBehaviour
 {
     public Sprite TileGrass;
     public Sprite TileGround;
     public Sprite TileStone;
+    public Sprite log;
+    public Sprite leaf;
+    public FillRule ruleTileGround;
 
-
+    public int treeChance = 10;
+    public bool generateCaves = true;
     public float surfaceValue = 0.25f;
     public int worldSize = 100;
     public float caveFreq = 0.05f;
@@ -35,33 +40,48 @@ public class TerrainGeneration : MonoBehaviour
             float height = Mathf.PerlinNoise ((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition;
             for (int y = 0; y < height; y++)
             {
-                Sprite tileSprite; 
+                Sprite tileSprite;
                 if (y < height - groundLayerHight)
                 {
                     tileSprite = TileStone;
 
                 }
+                else if (y < height - 1)
+                {
+                    tileSprite = TileGround;
+                }
                 else
                 {
-                    tileSprite = TileGround;//STONE BE HERE
+                    tileSprite = TileGrass;//STONE BE HERE
                     //tileSprite = TileGrass;
                 }
 
-                if (noiseTexture.GetPixel(x, y).r > surfaceValue)
+                if (generateCaves)
                 {
-                    GameObject newTile = new GameObject();
-                    newTile.transform.parent = this.transform;
-                    newTile.AddComponent<SpriteRenderer>();
-                    newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                    newTile.name = tileSprite.name;
-                    newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                    if (noiseTexture.GetPixel(x, y).r < 0.5f) ;
 
+                    if (noiseTexture.GetPixel(x, y).r > surfaceValue)
+                    {
+                        PlaceTile(x, y, tileSprite);
+                    }
+                }
+                else
+                {
+                    PlaceTile(x, y, tileSprite);
                 }
             }
         }
     }
 
+    private void PlaceTile(int x, int y, Sprite tileSprite)
+    {
+        GameObject newTile = new GameObject();
+        newTile.transform.parent = this.transform;
+        newTile.AddComponent<SpriteRenderer>();
+        newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+        newTile.name = tileSprite.name;
+        newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+        if (noiseTexture.GetPixel(x, y).r < 0.5f) ;
+    }
 
     public void GenerateNoiseExtra()
     {
