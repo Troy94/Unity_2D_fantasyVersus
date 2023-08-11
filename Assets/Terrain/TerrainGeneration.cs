@@ -80,7 +80,7 @@ public class TerrainGeneration : MonoBehaviour
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
         newTile.name = tileSprite.name;
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-        if (noiseTexture.GetPixel(x, y).r < 0.5f) ;
+        //if (noiseTexture.GetPixel(x, y).r < 0.5f) ;
     }
 
     public void GenerateNoiseExtra()
